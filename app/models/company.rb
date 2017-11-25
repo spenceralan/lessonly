@@ -27,4 +27,6 @@ class Company < ApplicationRecord
     inclusion: {
       in: PLAN_LEVELS.keys.map(&:to_s)
     }
+
+  scope :alphabetically, -> { order :name }
 end
