@@ -5,3 +5,14 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+
+Company.delete_all
+
+25.times do
+  Company.create(
+    name: Faker::Company.name,
+    plan_level: Company::PLAN_LEVELS.values.sample,
+    trial_status: Faker::Date.between(300.days.ago, Date.today + 30)
+  )
+end
