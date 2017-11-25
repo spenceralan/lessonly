@@ -1,18 +1,33 @@
 require 'rails_helper'
 
 describe "get companies routes", type: :request do
-  let!(:companyZ) { FactoryBot.create(:company, name: "Zeta Test", plan_level: "basic")}
-  let!(:companyB) { FactoryBot.create(:company, name: "Beta Test", plan_level: "legacy")}
-  let!(:companyA) { FactoryBot.create(:company, name: "Alpha Test", plan_level: "custom")}
+  let!(:companyZ) { FactoryBot.create(:company,
+    name: "Zeta Test",
+    plan_level: "basic",
+    trial_status: Date.tomorrow
+  )}
+  let!(:companyB) { FactoryBot.create(:company,
+    name: "Beta Test",
+    plan_level: "legacy",
+    trial_status: Date.today
+  )}
+  let!(:companyA) { FactoryBot.create(:company,
+    name: "Alpha Test",
+    plan_level: "custom",
+    trial_status: Date.yesterday
+  )}
 
   describe "index" do
     it "returns all companies" do
       get "/companies"
       expect(JSON.parse(response.body).size).to eq(3)
     end
-  end
 
-  describe "alphabetical" do
+    it "returns not found status for invalid requests" do
+      get "/companies/delete_all"
+      expect(response.status).to eq 404
+    end
+
     it "returns all companies without order" do
       get "/companies"
       first_company_id = JSON.parse(response.body).dig(0, "id")
@@ -24,13 +39,18 @@ describe "get companies routes", type: :request do
       first_company_id = JSON.parse(response.body).dig(0, "id")
       expect(first_company_id).to eq companyA.id
     end
-  end
 
-  describe "with modern plan" do
     it "returns only companies with modern plans" do
       get "/companies/with_modern_plan"
       first_company_id = JSON.parse(response.body).dig(0, "id")
       expect(first_company_id).to eq companyZ.id
+      expect(JSON.parse(response.body).size).to eq(1)
+    end
+
+    it "returns only companies out of trialing period" do
+      get "/companies/not_trialing"
+      first_company_id = JSON.parse(response.body).dig(0, "id")
+      expect(first_company_id).to eq companyA.id
       expect(JSON.parse(response.body).size).to eq(1)
     end
   end
