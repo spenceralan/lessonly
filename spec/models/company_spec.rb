@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Company, type: :model do
+  it { should have_many :lessons }
+
   it { should validate_presence_of :name }
   it { should validate_presence_of :plan_level }
   it { should validate_presence_of :trial_status }

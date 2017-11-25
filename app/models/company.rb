@@ -1,4 +1,6 @@
 class Company < ApplicationRecord
+  has_many :lessons
+
   PLAN_LEVELS = {
     legacy: 0,
     custom: 1,
