@@ -14,7 +14,8 @@ describe "get companies routes", type: :request do
   let!(:companyA) { FactoryBot.create(:company,
     name: "Alpha Test",
     plan_level: "custom",
-    trial_status: Date.yesterday
+    trial_status: Date.yesterday,
+    created_at: Date.today - 1.month
   )}
 
   describe "index" do
@@ -49,6 +50,13 @@ describe "get companies routes", type: :request do
 
     it "returns only companies out of trialing period" do
       get "/companies/not_trialing"
+      first_company_id = JSON.parse(response.body).dig(0, "id")
+      expect(first_company_id).to eq companyA.id
+      expect(JSON.parse(response.body).size).to eq(1)
+    end
+
+    it "returns the companies created last month" do
+      get "/companies/created_last_month"
       first_company_id = JSON.parse(response.body).dig(0, "id")
       expect(first_company_id).to eq companyA.id
       expect(JSON.parse(response.body).size).to eq(1)
