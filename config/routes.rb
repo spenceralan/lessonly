@@ -3,4 +3,5 @@ Rails.application.routes.draw do
 
   get "/companies", to: "companies#index"
   get "/companies/alphabetically", to: "companies#alphabetically"
+  get "/companies/with_modern_plan", to: "companies#with_modern_plan"
 end

@@ -29,4 +29,5 @@ class Company < ApplicationRecord
     }
 
   scope :alphabetically, -> { order :name }
+  scope :with_modern_plan, -> { where.not(plan_level: "legacy").where.not(plan_level: "custom") }
 end
